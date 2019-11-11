@@ -117,7 +117,7 @@ int countDigits( quint64 n )
 
 } // namespace
 
-LineChunk::LineChunk( int first_col, int last_col, ChunkType type )
+LineChunk::LineChunk( int first_col, int last_col, Common::ChunkType type )
 {
     // LOG(logDEBUG) << "new LineChunk: " << first_col << " " << last_col;
 
@@ -148,7 +148,7 @@ std::vector<LineChunk> LineChunk::select( int sel_start, int sel_end ) const
             list.emplace_back( start_, sel_start - 1, type_ );
         }
 
-        list.emplace_back( sel_start, sel_end, Selected );
+        list.emplace_back( sel_start, sel_end, Common::ChunkType::Selected );
 
         if ( sel_end < end_ ) {
             list.emplace_back( sel_end + 1, end_, type_ );
@@ -1732,6 +1732,10 @@ void AbstractLogView::drawTextArea( QPaintDevice* paint_device, int32_t delta_y 
             }
 
             backColor = palette.color( QPalette::Base );
+
+            // THUONG_DEBUG
+            foreColor = QColor( 171, 178, 191 ); // font color
+            backColor = QColor( 40, 44, 53 );    // background
         }
 
         // Is there something selected in the line?
@@ -1758,15 +1762,16 @@ void AbstractLogView::drawTextArea( QPaintDevice* paint_device, int32_t delta_y 
                     continue;
 
                 if ( start > column )
-                    chunkList.emplace_back( column, start - 1, LineChunk::Normal );
+                    chunkList.emplace_back( column, start - 1, Common::ChunkType::Normal );
 
                 column = qMin( start + match.length() - 1, nbCols );
-                chunkList.emplace_back( qMax( start, 0 ), column, LineChunk::Highlighted );
+				//THUONG_DEBUG
+                chunkList.emplace_back( qMax( start, 0 ), column, match.chunkType() );
 
                 column++;
             }
             if ( column <= cutLine.length() - 1 )
-                chunkList.emplace_back( column, cutLine.length() - 1, LineChunk::Normal );
+                chunkList.emplace_back( column, cutLine.length() - 1, Common::ChunkType::Normal );
 
             // Then we add the selection if needed
             std::vector<LineChunk> newChunkList;
@@ -1790,19 +1795,43 @@ void AbstractLogView::drawTextArea( QPaintDevice* paint_device, int32_t delta_y 
                 QColor fore;
                 QColor back;
                 switch ( chunk.type() ) {
-                case LineChunk::Normal:
+                case Common::ChunkType::Normal:
                     fore = foreColor;
                     back = backColor;
                     break;
-                case LineChunk::Highlighted:
+                case Common::ChunkType::Highlighted:
                     fore = QColor( "black" );
                     back = QColor( "yellow" );
                     // fore = highlightForeColor;
                     // back = highlightBackColor;
                     break;
-                case LineChunk::Selected:
+                case Common::ChunkType::Selected:
                     fore = palette.color( QPalette::HighlightedText );
                     back = palette.color( QPalette::Highlight );
+                    break;
+                case Common::ChunkType::Info:
+                    fore = QColor( 117, 160, 32 ); // 
+                    back = backColor;
+                    break;
+                case Common::ChunkType::Warning:
+                    fore = QColor( 205, 123, 47 );
+                    back = backColor;
+                    break;
+                case Common::ChunkType::Error:
+                    fore = QColor( 227, 49, 25 );
+                    back = backColor;
+                    break;
+                case Common::ChunkType::Quote:
+                    fore = QColor( 152, 195, 121 );
+                    back = backColor;
+                    break;
+                case Common::ChunkType::Date:
+                    fore = QColor( 209, 154, 102 );
+                    back = backColor;
+                    break;
+                case Common::ChunkType::Component:
+                    fore = QColor( 102, 166, 209 );
+                    back = backColor;
                     break;
                 }
                 lineDrawer.addChunk( chunk, fore, back );

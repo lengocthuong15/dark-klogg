@@ -43,17 +43,32 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QString>
+#include "common.h"
 
 class QuickFind;
+
+static std::vector<QString> listPreDefine = {
+	QStringLiteral( "info" ), 
+	QStringLiteral( "warning" ) 
+};
 
 // Represents a match result for QuickFind
 class QuickFindMatch {
   public:
+    //enum ChunkType = Common::ChunkType;
     // Construct a match (must be initialised)
     QuickFindMatch( int start_column, int length )
     {
         startColumn_ = start_column;
         length_ = length;
+        chunkType_ = Common::ChunkType::Highlighted;
+    }
+
+    QuickFindMatch( int start_column, int length, Common::ChunkType type )
+    {
+        startColumn_ = start_column;
+        length_ = length;
+        chunkType_ = type;
     }
 
     // Accessor functions
@@ -66,9 +81,15 @@ class QuickFindMatch {
         return length_;
     }
 
+    Common::ChunkType chunkType() const
+    {
+        return chunkType_;
+    }
+
   private:
     int startColumn_;
     int length_;
+    Common::ChunkType chunkType_;
 };
 
 class QuickFindMatcher {
@@ -133,6 +154,9 @@ class QuickFindPattern : public QObject {
     {
         return pattern_;
     }
+
+    // THUONG_DEBUG
+    void matchPreDefine( const QString& line, const QString &searchString, const Common::ChunkType type ,std::vector<QuickFindMatch>& matches ) const;
 
     // Returns whether the passed line match the quick find search.
     // If so, it populate the passed list with the list of matches

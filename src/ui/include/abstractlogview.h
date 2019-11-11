@@ -61,17 +61,15 @@ class QAction;
 class LineChunk
 {
   public:
-    enum ChunkType {
-        Normal,
-        Highlighted,
-        Selected,
-    };
 
-    LineChunk( int first_col, int end_col, ChunkType type );
+    LineChunk( int first_col, int end_col, Common::ChunkType type );
 
     int start() const { return start_; }
     int end() const { return end_; }
-    ChunkType type() const { return type_; }
+    Common::ChunkType type() const
+    {
+        return type_;
+    }
 
     // Returns 'true' if the selection is part of this chunk
     // (at least partially), if so, it should be replaced by the list returned
@@ -80,7 +78,7 @@ class LineChunk
   private:
     int start_;
     int end_;
-    ChunkType type_;
+    Common::ChunkType type_;
 };
 
 // Utility class for syntax colouring.

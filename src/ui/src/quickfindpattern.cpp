@@ -143,6 +143,22 @@ void QuickFindPattern::changeSearchPattern( const QString& pattern, bool ignoreC
     changeSearchPattern( pattern );
 }
 
+// THUONG_DEBUG
+void QuickFindPattern::matchPreDefine( const QString& line, const QString& searchString,
+                                       const Common::ChunkType type,
+                                       std::vector<QuickFindMatch>& matches ) const
+{
+    QRegularExpression regex;
+    regex.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
+    regex.setPattern( searchString );
+    QRegularExpressionMatchIterator matchIterator = regex.globalMatch( line );
+
+    while ( matchIterator.hasNext() ) {
+        QRegularExpressionMatch match = matchIterator.next();
+        matches.emplace_back( match.capturedStart(), match.capturedLength(), type );
+    }
+}
+
 bool QuickFindPattern::matchLine( const QString& line, std::vector<QuickFindMatch>& matches ) const
 {
     matches.clear();
@@ -155,6 +171,15 @@ bool QuickFindPattern::matchLine( const QString& line, std::vector<QuickFindMatc
             matches.emplace_back( match.capturedStart(), match.capturedLength() );
         }
     }
+
+	//THUONG_DEBUG
+	for (auto searchString : Common::preDefineList)
+	{
+        matchPreDefine( line, searchString.second, searchString.first, matches );
+	}
+
+	std::sort( matches.begin(), matches.end(),
+          []( const QuickFindMatch& a, const QuickFindMatch& b ) { return a.startColumn() < b.startColumn(); } );
 
     return ( matches.size() > 0 );
 }
