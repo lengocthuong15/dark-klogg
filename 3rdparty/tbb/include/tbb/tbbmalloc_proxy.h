@@ -42,7 +42,7 @@ klogg_tbbmalloc_proxy.lib /INCLUDE:"__TBB_malloc_proxy"
 #if _MSC_VER
 
 #ifdef _DEBUG
-    #pragma comment(lib, "klogg_tbbmalloc_proxy_debug.lib")
+    #pragma comment(lib, "klogg_tbbmalloc_proxy.lib")
 #else
     #pragma comment(lib, "klogg_tbbmalloc_proxy.lib")
 #endif
