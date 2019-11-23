@@ -1825,12 +1825,16 @@ void AbstractLogView::drawTextArea( QPaintDevice* paint_device, int32_t delta_y 
                     fore = QColor( 152, 195, 121 );
                     back = backColor;
                     break;
-                case Common::ChunkType::Date:
-                    fore = QColor( 209, 154, 102 );
+                case Common::ChunkType::Common:
+                    fore = QColor( 42, 103, 163 );
                     back = backColor;
                     break;
                 case Common::ChunkType::Component:
                     fore = QColor( 102, 166, 209 );
+                    back = backColor;
+                    break;
+                case Common::ChunkType::Number:
+                    fore = QColor( 201, 163, 87 );
                     back = backColor;
                     break;
                 }

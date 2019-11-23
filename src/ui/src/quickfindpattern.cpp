@@ -172,14 +172,20 @@ bool QuickFindPattern::matchLine( const QString& line, std::vector<QuickFindMatc
         }
     }
 
-	//THUONG_DEBUG
-	for (auto searchString : Common::preDefineList)
-	{
+    // THUONG_DEBUG
+    for ( auto searchString : Common::preDefineList ) {
+        QString hightLightStr = regexp_.pattern();
+        if ( !hightLightStr.isEmpty()
+             && searchString.second.contains( hightLightStr, Qt::CaseInsensitive ) ) {
+            continue;
+        }
         matchPreDefine( line, searchString.second, searchString.first, matches );
-	}
+    }
 
-	std::sort( matches.begin(), matches.end(),
-          []( const QuickFindMatch& a, const QuickFindMatch& b ) { return a.startColumn() < b.startColumn(); } );
+    std::sort( matches.begin(), matches.end(),
+               []( const QuickFindMatch& a, const QuickFindMatch& b ) {
+                   return a.startColumn() < b.startColumn();
+               } );
 
     return ( matches.size() > 0 );
 }
