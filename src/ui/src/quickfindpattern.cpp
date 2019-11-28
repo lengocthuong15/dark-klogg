@@ -175,8 +175,12 @@ bool QuickFindPattern::matchLine( const QString& line, std::vector<QuickFindMatc
     // THUONG_DEBUG
     for ( auto searchString : Common::preDefineList ) {
         QString hightLightStr = regexp_.pattern();
-        if ( !hightLightStr.isEmpty()
-             && searchString.second.contains( hightLightStr, Qt::CaseInsensitive ) ) {
+		QRegularExpression regex(searchString.second);
+		regex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+		QRegularExpressionMatch match = regex.match(hightLightStr);
+		bool hasMatch = match.hasMatch(); // true
+
+        if (hasMatch) {
             continue;
         }
         matchPreDefine( line, searchString.second, searchString.first, matches );

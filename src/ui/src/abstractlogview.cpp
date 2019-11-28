@@ -1837,6 +1837,10 @@ void AbstractLogView::drawTextArea( QPaintDevice* paint_device, int32_t delta_y 
                     fore = QColor( 201, 163, 87 );
                     back = backColor;
                     break;
+				case Common::ChunkType::MD5:
+					fore = QColor(2, 207, 247);
+					back = backColor;
+					break;
                 }
                 lineDrawer.addChunk( chunk, fore, back );
             }
